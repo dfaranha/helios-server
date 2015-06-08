@@ -1,3 +1,4 @@
+{% load i18n %}
 {% if default_auth_system %}
 <p><a  style="font-size:1.3em; border: 1px solid #bbb; padding: 5px;" href="{% url helios_auth.views.start system_name=default_auth_system %}?return_url={{return_url}}">{{default_auth_system_obj.LOGIN_MESSAGE}}</a></p>
 {% else %}
@@ -6,7 +7,7 @@
 {% else %}
 <p>
     <a href="{{SECURE_URL_HOST}}{% url helios_auth.views.start system_name=auth_system %}?return_url={{return_url}}" style="font-size: 1.4em;">
-<img border="0" height="35" src="/static/auth/login-icons/{{auth_system}}.png" alt="{{auth_system}}" /> {{auth_system}}
+    <img border="0" height="35" src="/static/auth/login-icons/{{auth_system}}.png" alt="{{auth_system}}"/> {% trans "Login" %}
 {% endifequal %}
 </a>
 </p>

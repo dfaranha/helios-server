@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import *
 from django.http import *
 from django.conf import settings
+from django.utils.translation import ugettext as _
 
 from models import *
 from helios_auth.security import get_user
@@ -79,7 +80,7 @@ def do_election_checks(election, props):
   
 def get_election_by_uuid(uuid):
   if not uuid:
-    raise Exception("no election ID")
+    raise Exception(_("no election ID"))
       
   return Election.get_by_uuid(uuid)
   
@@ -118,8 +119,15 @@ def user_can_admin_election(user, election):
   if not user:
     return False
 
-  # election or site administrator
-  return election.admin == user or user.admin_p
+  # election admin
+  if election and user != election.admin:
+    return False
+
+  # can create election
+  if not user.admin_p:
+    return False
+
+  return True
   
 def user_can_see_election(request, election):
   user = get_user(request)
@@ -156,7 +164,7 @@ def election_admin(**checks):
       user = get_user(request)
       if not user_can_admin_election(user, election):
         raise PermissionDenied()
-        
+      
       # do checks
       do_election_checks(election, checks)
         
@@ -181,13 +189,11 @@ def trustee_check(func):
 
 def can_create_election(request):
   user = get_user(request)
-  if not user:
-    return False
-    
-  if helios.ADMIN_ONLY:
-    return user.admin_p
-  else:
-    return user != None
+  
+  if user and user.admin_p:
+    return True
+
+  return False
   
 def user_can_feature_election(user, election):
   if not user:
