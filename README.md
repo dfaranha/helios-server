@@ -7,12 +7,29 @@ Sistema de Votação Eletrônica Helios/UNICAMP
   * Inicialização dos diretórios: `service postgresql initdb`
   * Inicialização do serviço: `/etc/init.d/postgresql start`
   * Alterar autenticação no localhost para `md5` ao invés de `ident` em `/var/lib/pgsql/data/pg_hba.conf`
-  * Definir a senha para usuário: `passwd postgres` e criar banco de dados com comando
-     su - postgres
-     <usar a senha definida acima>
-     createdb helios
+  * Definir a senha para usuário: `passwd postgres` e criar banco de dados: `su - postgres; createdb helios`
 
- openldap-devel
+2. Instalação e configuração do cliente LDAP:
+ * Instalação do pacote: `yum install openldap-devel`
+ * Instalação do certificado raiz em `/etc/openldap/certs`
+ * Configuração do cliente em `/etc/openldap/ldap.conf`
+ ```
+#
+# LDAP Defaults
+#
+
+# See ldap.conf(5) for details
+# This file should be world readable but not world writable.
+
+BASE    dc=unicamp,dc=br
+URI     ldaps://ldap1.unicamp.br ldaps://ldap2.unicamp.br
+
+#SIZELIMIT      12
+#TIMELIMIT      15
+#DEREF          never
+
+TLS_CACERTDIR   /etc/openldap/certs
+```
  
 2. Download dessa versão do Helios: `cd /opt; git clone --recursive; git://github.com/dfaranha/helios-server.git`
 
@@ -23,7 +40,7 @@ Sistema de Votação Eletrônica Helios/UNICAMP
 
 4. Configuração do Helios no arquivo setting.py
 
-```
+ ```
 TIME_ZONE = 'America/Sao_Paulo'
 ADMINS = (
      ('Administrator', 'root'),
