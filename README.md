@@ -3,7 +3,7 @@ Sistema de Votação Eletrônica Helios/UNICAMP
 
 1. Instalação e configuração do banco de dados PostgreSQL
 
-  * Instalação do servidor: `yum install postgresql-server postgresql-devel`
+  * Instalação do servidor: `yum install postgresql-server postgresql-devel python-devel`
   * Inicialização dos diretórios: `service postgresql initdb`
   * Inicialização do serviço: `/etc/init.d/postgresql start`
   * Alterar autenticação no localhost para `md5` ao invés de `ident` em `/var/lib/pgsql/data/pg_hba.conf`
@@ -38,7 +38,7 @@ TLS_CACERTDIR   /etc/openldap/certs
   * Criação e utilização do do sandbox: `virtualenv venv; source venv/bin/activate`
   * Instalação da versão 1.4: `cd helios-server; pip install -r requirements.txt`
 
-4. Configuração do Helios no arquivo setting.py
+4. Configuração do Helios no arquivo `settings.py`
 
  ```
 TIME_ZONE = 'America/Sao_Paulo'
