@@ -31,14 +31,14 @@ URI     ldaps://ldap1.unicamp.br ldaps://ldap2.unicamp.br
 TLS_CACERTDIR   /etc/openldap/certs
 ```
  
-2. Download dessa versão do Helios: `cd /opt; git clone --recursive; git://github.com/dfaranha/helios-server.git`
+3. Download dessa versão do Helios: `cd /opt; git clone --recursive; git://github.com/dfaranha/helios-server.git`
 
-3. Instalação do Django via PIP
+4. Instalação do Django via PIP
   * Instalação do PIP: `yum install python-pip python-virtualenv`
   * Criação e utilização do do sandbox: `virtualenv venv; source venv/bin/activate`
   * Instalação da versão 1.4: `cd helios-server; pip install -r requirements.txt`
 
-4. Configuração do Helios no arquivo `settings.py`
+5. Configuração do Helios no arquivo `settings.py`
 
  ```
 TIME_ZONE = 'America/Sao_Paulo'
@@ -91,6 +91,6 @@ AUTHENTICATION_BACKENDS = (
 )
 ```
 
-5 Testando o Helios: `python manage.py test`
+6. Testando o Helios: `python manage.py test`
 
-6 Executando o Helios com visibilidade externa: `python manage.py runserver <meu servidor>:8080`
+7. Executando o Helios com visibilidade externa: `python manage.py runserver <meu servidor>:8080`
