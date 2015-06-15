@@ -11,7 +11,7 @@ from django.template import loader
 from django import http
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse as reverseURL
-from django.views.generic.simple import direct_to_template
+from django.views.generic.base import TemplateView
 
 from django.conf import settings
 
