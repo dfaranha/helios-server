@@ -41,10 +41,15 @@ TLS_CACERTDIR   /etc/openldap/certs
 5. Configuração do Helios no arquivo `settings.py`
 
  ```
-TIME_ZONE = 'America/Sao_Paulo'
 ADMINS = (
      ('Administrator', 'root'),
 )
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = get_from_env('SECRET_KEY', '<definir segredo para o Django>')
+
+TIME_ZONE = 'America/Sao_Paulo'
+
 DATABASES = {
      'default': {
          'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -54,7 +59,16 @@ DATABASES = {
          'PASSWORD': '<password definido acima>'
      }
 }
-LANGUAGE_CODE = 'en-us'
+
+# Language code for this installation. All choices can be found here:
+# http://www.i18nguy.com/unicode/language-identifiers.html
+LANGUAGE_CODE = 'pt-br'
+
+LANGUAGES = (
+    ('en', _('English')),
+    ('pt-br', _('Brazilian Portuguese')),
+)
+
 DEFAULT_FROM_EMAIL = get_from_env('DEFAULT_FROM_EMAIL', '<meu email>')
 DEFAULT_FROM_NAME = get_from_env('DEFAULT_FROM_NAME', '<teste Helios>')
 URL_HOST = get_from_env("URL_HOST", "http://localhost:8080").rstrip("/")
