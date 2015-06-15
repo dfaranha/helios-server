@@ -1,7 +1,110 @@
-# Helios Election System
+Sistema de Votação Eletrônica Helios/UNICAMP
+===========================================
 
-Helios is an end-to-end verifiable voting system.
+1. Instalação e configuração do banco de dados PostgreSQL
 
-![Travis Build Status](https://travis-ci.org/benadida/helios-server.svg?branch=master)
+  * Instalação do servidor: `yum install postgresql-server postgresql-devel python-devel`
+  * Inicialização dos diretórios: `service postgresql initdb`
+  * Inicialização do serviço: `/etc/init.d/postgresql start`
+  * Alterar autenticação no localhost para `md5` ao invés de `ident` em `/var/lib/pgsql/data/pg_hba.conf`
+  * Definir a senha para usuário: `passwd postgres` e criar banco de dados: `su - postgres; createdb helios`
 
-[![Stories in Ready](https://badge.waffle.io/benadida/helios-server.png?label=ready&title=Ready)](https://waffle.io/benadida/helios-server)
+2. Instalação e configuração do cliente LDAP:
+ * Instalação do pacote: `yum install openldap-devel`
+ * Instalação do certificado raiz em `/etc/openldap/certs`
+ * Configuração do cliente em `/etc/openldap/ldap.conf`
+ ```
+#
+# LDAP Defaults
+#
+
+# See ldap.conf(5) for details
+# This file should be world readable but not world writable.
+
+BASE    dc=unicamp,dc=br
+URI     ldaps://ldap1.unicamp.br ldaps://ldap2.unicamp.br
+
+#SIZELIMIT      12
+#TIMELIMIT      15
+#DEREF          never
+
+TLS_CACERTDIR   /etc/openldap/certs
+```
+ 
+3. Download dessa versão do Helios: `cd /opt; git clone --recursive; git://github.com/dfaranha/helios-server.git`
+
+4. Instalação do Django via PIP
+  * Instalação do PIP: `yum install python-pip python-virtualenv`
+  * Criação e utilização do do sandbox: `virtualenv venv; source venv/bin/activate`
+  * Instalação da versão 1.4: `cd helios-server; pip install -r requirements.txt`
+
+5. Configuração do Helios no arquivo `settings.py`
+
+ ```
+ADMINS = (
+     ('Administrator', 'root'),
+)
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = get_from_env('SECRET_KEY', '<definir segredo para o Django>')
+
+TIME_ZONE = 'America/Sao_Paulo'
+
+DATABASES = {
+     'default': {
+         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+         'HOST': 'localhost',
+         'NAME': 'helios',
+         'USER': 'postgres',
+         'PASSWORD': '<password definido acima>'
+     }
+}
+
+# Language code for this installation. All choices can be found here:
+# http://www.i18nguy.com/unicode/language-identifiers.html
+LANGUAGE_CODE = 'pt-br'
+
+LANGUAGES = (
+    ('en', _('English')),
+    ('pt-br', _('Brazilian Portuguese')),
+)
+
+DEFAULT_FROM_EMAIL = get_from_env('DEFAULT_FROM_EMAIL', '<meu email>')
+DEFAULT_FROM_NAME = get_from_env('DEFAULT_FROM_NAME', '<teste Helios>')
+URL_HOST = get_from_env("URL_HOST", "http://localhost:8080").rstrip("/")
+
+
+AUTH_LDAP_SERVER_URI = 'ldaps://ldap1.unicamp.br' # replace by your ldap URI
+
+AUTH_LDAP_BIND_DN = ""
+AUTH_LDAP_BIND_PASSWORD = ""
+
+AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=people,dc=unicamp,dc=br",
+    ldap.SCOPE_SUBTREE, "(uid=%(user)s)"
+)
+
+AUTH_LDAP_USER_ATTR_MAP = {
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "cn",
+}
+
+AUTH_LDAP_GROUP_TYPE = GroupOfNamesType(name_attr="cn")
+
+AUTH_LDAP_FIND_GROUP_PERMS = True
+
+AUTH_LDAP_BIND_AS_AUTHENTICATING_USER = True
+AUTH_LDAP_CACHE_GROUPS = True
+AUTH_LDAP_GROUP_CACHE_TIMEOUT = 3600
+
+AUTH_LDAP_ALWAYS_UPDATE_USER = False
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'django_auth_ldap.backend.LDAPBackend',
+)
+```
+
+6. Testando o Helios: `python manage.py test`
+
+7. Executando o Helios com visibilidade externa: `python manage.py runserver <meu servidor>:8080`
