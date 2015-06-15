@@ -69,10 +69,20 @@ LANGUAGES = (
     ('pt-br', _('Brazilian Portuguese')),
 )
 
-DEFAULT_FROM_EMAIL = get_from_env('DEFAULT_FROM_EMAIL', '<meu email>')
-DEFAULT_FROM_NAME = get_from_env('DEFAULT_FROM_NAME', '<teste Helios>')
-URL_HOST = get_from_env("URL_HOST", "http://localhost:8080").rstrip("/")
+# The two hosts are here so the main site can be over plain HTTP
+# while the voting URLs are served over SSL.
+URL_HOST = get_from_env("URL_HOST", "https://evote.unicamp.br:8080")
 
+# IMPORTANT: you should not change this setting once you've created
+# elections, as your elections' cast_url will then be incorrect.
+# SECURE_URL_HOST = "https://localhost:8443"
+SECURE_URL_HOST = get_from_env("SECURE_URL_HOST", "https://evote.unicamp.br:8080")
+
+# this additional host is used to iframe-isolate the social buttons,
+# which usually involve hooking in remote JavaScript, which could be
+# a security issue. Plus, if there's a loading issue, it blocks the whole
+# page. Not cool.
+SOCIALBUTTONS_URL_HOST= get_from_env("SOCIALBUTTONS_URL_HOST", "https://evote.unicamp.br:8080")
 
 AUTH_LDAP_SERVER_URI = 'ldaps://ldap1.unicamp.br' # replace by your ldap URI
 
@@ -107,4 +117,4 @@ AUTHENTICATION_BACKENDS = (
 
 6. Testando o Helios: `python manage.py test`
 
-7. Executando o Helios com visibilidade externa: `python manage.py runserver <meu servidor>:8080`
+7. Executando o Helios com visibilidade externa: `python manage.py runsslserver --addrport 0.0.0.0:8080`
