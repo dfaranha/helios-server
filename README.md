@@ -69,6 +69,47 @@ LANGUAGES = (
     ('pt-br', _('Brazilian Portuguese')),
 )
 
+MIDDLEWARE_CLASSES = (
+    # make all things SSL
+    #'sslify.middleware.SSLifyMiddleware',
+
+    # secure a bunch of things
+    'djangosecure.middleware.SecurityMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware'
+
+   # 'flatpages_i18n.middleware.FlatpageFallbackMiddleware'
+)
+
+TEMPLATE_DIRS = (
+    ROOT_PATH,
+    os.path.join(ROOT_PATH, 'templates')
+)
+
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'djangosecure',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.staticfiles',
+    'django.contrib.messages',
+    'django.contrib.admin',
+    ## needed for queues
+    'djcelery',
+    'kombu.transport.django',
+    ## needed for schema migration
+    'south',
+    ## HELIOS stuff
+    'helios_auth',
+    'helios',
+    'server_ui',
+    'sslserver',
+)
+
+
 # The two hosts are here so the main site can be over plain HTTP
 # while the voting URLs are served over SSL.
 URL_HOST = get_from_env("URL_HOST", "https://evote.unicamp.br:8080")
