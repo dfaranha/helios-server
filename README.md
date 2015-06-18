@@ -109,7 +109,6 @@ INSTALLED_APPS = (
     'sslserver',
 )
 
-
 # The two hosts are here so the main site can be over plain HTTP
 # while the voting URLs are served over SSL.
 URL_HOST = get_from_env("URL_HOST", "https://evote.unicamp.br:8080")
