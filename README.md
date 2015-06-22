@@ -158,3 +158,6 @@ AUTHENTICATION_BACKENDS = (
 6. Testando o Helios: `python manage.py test`
 
 7. Executando o Helios com visibilidade externa: `python manage.py runsslserver --addrport 0.0.0.0:8080`
+
+8. Habilitar o tratamento de tarefas periódicas: `python manage.py celeryd`
+
