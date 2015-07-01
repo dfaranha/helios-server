@@ -69,10 +69,60 @@ LANGUAGES = (
     ('pt-br', _('Brazilian Portuguese')),
 )
 
-DEFAULT_FROM_EMAIL = get_from_env('DEFAULT_FROM_EMAIL', '<meu email>')
-DEFAULT_FROM_NAME = get_from_env('DEFAULT_FROM_NAME', '<teste Helios>')
-URL_HOST = get_from_env("URL_HOST", "http://localhost:8080").rstrip("/")
+MIDDLEWARE_CLASSES = (
+    # make all things SSL
+    #'sslify.middleware.SSLifyMiddleware',
 
+    # secure a bunch of things
+    'djangosecure.middleware.SecurityMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware'
+
+   # 'flatpages_i18n.middleware.FlatpageFallbackMiddleware'
+)
+
+TEMPLATE_DIRS = (
+    ROOT_PATH,
+    os.path.join(ROOT_PATH, 'templates')
+)
+
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'djangosecure',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.staticfiles',
+    'django.contrib.messages',
+    'django.contrib.admin',
+    ## needed for queues
+    'djcelery',
+    'kombu.transport.django',
+    ## needed for schema migration
+    'south',
+    ## HELIOS stuff
+    'helios_auth',
+    'helios',
+    'server_ui',
+    'sslserver',
+)
+
+# The two hosts are here so the main site can be over plain HTTP
+# while the voting URLs are served over SSL.
+URL_HOST = get_from_env("URL_HOST", "https://evote.unicamp.br:8080")
+
+# IMPORTANT: you should not change this setting once you've created
+# elections, as your elections' cast_url will then be incorrect.
+# SECURE_URL_HOST = "https://localhost:8443"
+SECURE_URL_HOST = get_from_env("SECURE_URL_HOST", "https://evote.unicamp.br:8080")
+
+# this additional host is used to iframe-isolate the social buttons,
+# which usually involve hooking in remote JavaScript, which could be
+# a security issue. Plus, if there's a loading issue, it blocks the whole
+# page. Not cool.
+SOCIALBUTTONS_URL_HOST= get_from_env("SOCIALBUTTONS_URL_HOST", "https://evote.unicamp.br:8080")
 
 AUTH_LDAP_SERVER_URI = 'ldaps://ldap1.unicamp.br' # replace by your ldap URI
 
@@ -107,4 +157,7 @@ AUTHENTICATION_BACKENDS = (
 
 6. Testando o Helios: `python manage.py test`
 
-7. Executando o Helios com visibilidade externa: `python manage.py runserver <meu servidor>:8080`
+7. Executando o Helios com visibilidade externa: `python manage.py runsslserver --addrport 0.0.0.0:8080`
+
+8. Habilitar o tratamento de tarefas periódicas: `python manage.py celeryd`
+
