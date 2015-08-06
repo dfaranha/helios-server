@@ -3,8 +3,6 @@ Protótipo do Sistema de Votação Eletrônica UNICAMP
 
 Baseado no sistema [Helios](heliosvoting.org), incluindo [modificações](http://dtic.ifsc.edu.br/sistemas/sistema-de-votacao-on-line-helios/) implementadas pelo [Instituto Federal de Santa Catarina](http://www.ifsc.edu.br/).
 
-http://dtic.ifsc.edu.br/sistemas/sistema-de-votacao-on-line-helios/
-
 1. Instalação e configuração do banco de dados PostgreSQL
 
   * Instalação do servidor: `yum install postgresql-server postgresql-devel python-devel`
